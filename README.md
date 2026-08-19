@@ -1,97 +1,106 @@
 <div align="center">
 
-# AdversarialWeb
+# 🛡️ AdversarialWeb
 
 ### Behavioral Bot · Scraping · Credential Stuffing · Account Takeover Detection
 
-**Investigate adversarial web traffic, explain detection gaps, and improve defenses without blindly increasing false positives.**
+**A production-style adversarial traffic investigation platform that turns detection gaps into measurable security improvements.**
 
-![Python](https://img.shields.io/badge/Python-3.10--3.12-3776AB?logo=python&logoColor=white)
-![ML](https://img.shields.io/badge/ML-XGBoost%20%7C%20Isolation%20Forest%20%7C%20DBSCAN-6A5ACD)
-![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
-![Data](https://img.shields.io/badge/Data-Synthetic%20Only-7B61FF)
+[![Python](https://img.shields.io/badge/Python-3.10--3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+![XGBoost](https://img.shields.io/badge/ML-XGBoost-FF6600)
+![Isolation Forest](https://img.shields.io/badge/Anomaly-Isolation%20Forest-7C3AED)
+![DBSCAN](https://img.shields.io/badge/Clustering-DBSCAN-0EA5E9)
+![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)
 [![CI](https://github.com/VinayK88/AdversarialWeb-Behavioral-Bot-ATO-Web-Attack-Detection/actions/workflows/ci.yml/badge.svg)](https://github.com/VinayK88/AdversarialWeb-Behavioral-Bot-ATO-Web-Attack-Detection/actions/workflows/ci.yml)
 
 </div>
 
+<p align="center">
+  <img src="assets/dashboard-preview.svg" alt="AdversarialWeb dashboard preview" width="100%" />
+</p>
+
 ---
 
-AdversarialWeb is a production-style security data-science project for **bot abuse, scraping, credential stuffing, and account takeover (ATO)**. It is designed around the work an adversarial-response or web-security data-science team actually performs:
+## Why this project
+
+Security detection is not just a classification problem. Real adversarial-response work starts when a detector **misses an attack, blocks legitimate users, or fails against a new campaign pattern**.
+
+AdversarialWeb models that full loop:
 
 **observe → detect → investigate FP/FN → isolate root cause → change rules/features/thresholds → re-evaluate → mine recurring attack patterns**
 
-The project intentionally goes beyond “train a classifier.” It makes **false positives, false negatives, detection gaps, threshold trade-offs, root-cause analysis, and product-facing remediation** first-class outputs.
+It intentionally makes **false positives, false negatives, detection gaps, threshold trade-offs, root-cause analysis, and analyst communication** first-class outputs.
 
-## What it demonstrates
+### At a glance
 
-- Large-scale-style web/session telemetry modeled with Python and pandas
-- HTTP and TLS-adjacent behavioral signals
-- Bot, scraping, credential-stuffing, and ATO behavior
-- Rule/threshold tuning with explicit false-positive guardrails
-- XGBoost supervised detection
-- Isolation Forest anomaly detection
-- DBSCAN campaign clustering
-- FP/FN investigation and targeted detection improvements
-- Historical attack-pattern mining
-- Streamlit investigation dashboard
-- Docker packaging and multi-version GitHub Actions CI
-- Example SQL feature engineering for request/session telemetry
-
-## Detection signals
-
-The synthetic telemetry includes:
-
-| Signal family | Examples |
+| Capability | What the project demonstrates |
 |---|---|
-| Request behavior | requests/min, inter-arrival variability, endpoint entropy, session duration |
-| Authentication abuse | login-failure rate, 4xx rate, accounts per IP, IPs per account |
-| Client identity | user-agent rotation, cookie reuse |
-| HTTP/TLS consistency | header consistency, TLS fingerprint consistency, HTTP version |
-| Navigation behavior | navigation entropy, endpoint family |
-| Automation | composite automation score |
+| **Bot & abuse detection** | Behavioral automation signals, scraping, credential stuffing, and ATO patterns |
+| **Detection engineering** | Rules, threshold tuning, feature improvement, FP/FN guardrails |
+| **Machine learning** | XGBoost supervised detection and Isolation Forest anomaly scoring |
+| **Campaign discovery** | DBSCAN clustering and recurring historical pattern mining |
+| **Investigation workflow** | Reproduce → root cause → targeted fix → verify |
+| **Production mindset** | Streamlit dashboard, Docker, SQL, CLI, tests, multi-version CI |
 
-These signals are intentionally overlapping so benign power users and adversarial traffic are not perfectly separable.
+---
 
-## Architecture
+## System architecture
 
-```text
-Synthetic request/session telemetry
-        │
-        ▼
-Behavioral feature layer
-        │
-        ├──────── Rules + thresholds
-        ├──────── XGBoost classifier
-        ├──────── Isolation Forest anomaly model
-        └──────── DBSCAN campaign clustering
-        │
-        ▼
-Detection quality evaluation
-precision · recall · FPR · FNR · F1
-        │
-        ▼
-FP/FN investigation
-        │
-        ├─ reproduce miss
-        ├─ isolate root cause
-        ├─ change feature/rule logic
-        ├─ re-tune threshold under FP guardrail
-        └─ verify targeted improvement
-        │
-        ▼
-Historical pattern mining + research ticket
-        │
-        ▼
-Streamlit analyst / executive dashboard
-```
+<p align="center">
+  <img src="assets/architecture.svg" alt="AdversarialWeb architecture" width="100%" />
+</p>
 
-## Flagship investigation: distributed credential stuffing
+The platform combines deterministic detection, supervised ML, anomaly detection, and clustering rather than assuming one technique solves every security scenario.
 
-The included investigation reproduces a common failure mode: a campaign distributes authentication attempts across many source IPs, keeping **per-IP velocity moderate**.
+### Detection layer
+
+| Approach | Best suited for | Strength |
+|---|---|---|
+| **Rules + thresholds** | Known abuse patterns | Fast, explainable, easy to tune |
+| **XGBoost** | Labeled malicious-vs-benign behavior | Strong nonlinear signal combination |
+| **Isolation Forest** | Unknown / unusual automation | Unsupervised anomaly discovery |
+| **DBSCAN** | Repeated attack campaigns | Density-based campaign grouping |
+
+---
+
+## Threat coverage
+
+| Threat | Representative signals | Typical detection challenge |
+|---|---|---|
+| **Automated bots** | request velocity, timing regularity, navigation entropy | benign automation can look bot-like |
+| **Scraping** | endpoint breadth, session duration, request cadence | distributed low-rate scraping |
+| **Credential stuffing** | login failures, account targeting, IP/account fan-out | attackers spread attempts across many IPs |
+| **Account takeover** | cookie reuse, identity switching, client inconsistency | compromised sessions may resemble real users |
+
+### Behavioral signal families
+
+- **Request behavior:** requests/min, inter-arrival variability, endpoint entropy, session duration
+- **Authentication abuse:** login-failure rate, 4xx rate, accounts/IP, IPs/account
+- **Client identity:** user-agent rotation, cookie reuse
+- **HTTP/TLS consistency:** header consistency, TLS-fingerprint consistency, HTTP version
+- **Navigation:** endpoint family and navigation entropy
+- **Automation:** composite automation score
+
+The synthetic benchmark deliberately introduces overlap between benign power users and adversarial traffic so the evaluation is not trivially separable.
+
+---
+
+## Detection gap investigation
+
+<p align="center">
+  <img src="assets/investigation-loop.svg" alt="Detection gap investigation workflow" width="100%" />
+</p>
+
+### Flagship case: distributed credential stuffing
+
+A velocity-heavy baseline detector misses a campaign because authentication attempts are distributed across many source IPs, keeping **per-IP request volume moderate**.
+
+<table>
+<tr>
+<td width="50%" valign="top">
 
 ### Baseline weakness
-
-The baseline detector overweights:
 
 ```text
 requests_per_minute
@@ -99,11 +108,12 @@ requests_per_minute
 + generic automation score
 ```
 
-That creates a blind spot for low-and-slow, distributed account targeting.
+The detector overweights obvious automation and underweights **account-targeting behavior**.
 
-### Root-cause fix
+</td>
+<td width="50%" valign="top">
 
-The improved detector adds:
+### Targeted improvement
 
 ```text
 account_targeting
@@ -116,13 +126,49 @@ account_targeting
 + automation
 ```
 
-It then re-tunes the threshold under a **≤5% false-positive-rate guardrail** and explicitly checks credential-stuffing recall before vs. after the fix.
+The threshold is then re-tuned under an explicit **false-positive-rate guardrail**.
 
-This is the key project story: **the fix is not “use a bigger model”; it is identify why the detector missed the attack and make a targeted, measurable improvement.**
+</td>
+</tr>
+</table>
 
-## Dashboard
+The key idea is simple: **do not respond to every miss by using a bigger model. Identify the failure mode, change the right signal, and prove the improvement.**
 
-Run:
+---
+
+## Interactive dashboard
+
+The Streamlit dashboard is designed for both **executive visibility** and **analyst investigation**.
+
+### Views
+
+**Executive overview**
+- detection recall and false-positive rate
+- credential-stuffing recall improvement
+- XGBoost F1
+- suspicious-session volume
+- attack mix and risk-score distribution
+
+**Investigation lab**
+- before-vs-after detection quality
+- root-cause narrative
+- evidence table
+- false-positive / false-negative impact
+- research-ticket summary
+
+**Campaign explorer**
+- DBSCAN attack clusters
+- recurring attack-family signatures
+- filtered session explorer
+- suspicious ASN / geography / behavior slices
+
+**Model lab**
+- XGBoost feature importance
+- threshold-vs-recall/FPR trade-off
+- anomaly-score diagnostics
+- operating-point selection under an FP guardrail
+
+### Run locally
 
 ```bash
 python -m venv .venv
@@ -131,12 +177,7 @@ pip install -e '.[dashboard]'
 streamlit run dashboard/app.py
 ```
 
-The dashboard contains four views:
-
-1. **Traffic overview** — attack mix, risk-score distribution, and session explorer
-2. **Detection gap investigation** — FP/FN metrics, root cause, targeted fix, and before/after results
-3. **Attack-pattern miner** — DBSCAN clusters and recurring historical signatures
-4. **Model diagnostics** — XGBoost feature importance and threshold trade-offs
+---
 
 ## Quick start
 
@@ -149,26 +190,34 @@ adversarialweb
 python -m unittest discover -s tests -v
 ```
 
-## Docker
+### Docker
 
 ```bash
 docker build -t adversarialweb .
 docker run --rm -p 8501:8501 adversarialweb
 ```
 
-Then open the Streamlit app on port `8501`.
+Open the dashboard on port `8501`.
 
-## Repository map
+---
+
+## Repository structure
 
 ```text
-.
+AdversarialWeb/
 ├── adversarialweb/
 │   ├── data.py              synthetic HTTP/session telemetry
-│   ├── detection.py         rules, threshold tuning, XGBoost, Isolation Forest, DBSCAN
-│   ├── investigation.py     FP/FN root-cause workflow + historical pattern mining
-│   └── cli.py               compact reproducible report
+│   ├── detection.py         rules, XGBoost, Isolation Forest, DBSCAN
+│   ├── investigation.py     FP/FN root-cause workflow + pattern mining
+│   └── cli.py               reproducible JSON report
 ├── dashboard/
-│   └── app.py               analyst + executive Streamlit dashboard
+│   └── app.py               executive + analyst Streamlit dashboard
+├── assets/
+│   ├── dashboard-preview.svg
+│   ├── architecture.svg
+│   └── investigation-loop.svg
+├── docs/
+│   └── web-security-role-map.md
 ├── sql/
 │   └── investigation_features.sql
 ├── tests/
@@ -178,55 +227,45 @@ Then open the Streamlit app on port `8501`.
 └── pyproject.toml
 ```
 
-## Security-research workflow
+---
 
-A research ticket produced from this type of investigation should capture:
+## Engineering quality
 
-```text
-Observed behavior
-↓
-Threat / customer impact
-↓
-Current detector behavior
-↓
-False-positive / false-negative evidence
-↓
-Root cause
-↓
-Targeted rule / threshold / feature change
-↓
-Before-vs-after metrics
-↓
-Residual risk
-↓
-Follow-up research
-```
-
-That creates a clean bridge between customer escalations, security operations, professional services, and the core detection/data-science team.
+- deterministic synthetic benchmark for reproducibility
+- explicit FP/FN measurement contract
+- threshold tuning with false-positive guardrails
+- unit tests for core detection and investigation logic
+- CLI smoke test
+- dashboard/package compilation checks
+- Python 3.10 / 3.11 / 3.12 CI matrix
+- Dockerized dashboard runtime
+- clear synthetic-data and evaluation boundary
 
 ## Production evolution
 
-The strongest next steps would be:
+High-value extensions include:
 
-- streaming request aggregation with Kafka/Flink/Spark Structured Streaming;
-- real JA4/JA3-style TLS fingerprint pipelines;
-- graph features linking IPs, accounts, cookies, devices, and sessions;
-- online threshold calibration by customer/application segment;
-- time-aware validation to avoid campaign leakage;
-- cost-sensitive learning for asymmetric FP/FN impact;
-- drift monitoring for bot behavior and attack-family prevalence;
-- analyst feedback loops and active learning;
-- shadow deployment and champion/challenger detection policies;
-- low-latency feature serving for edge enforcement.
+- streaming feature aggregation with Kafka / Spark Structured Streaming
+- real JA3/JA4-style TLS fingerprint pipelines
+- graph features linking IPs, accounts, cookies, devices, and sessions
+- segment-specific threshold calibration
+- time-aware validation to prevent campaign leakage
+- cost-sensitive learning for asymmetric FP/FN impact
+- drift monitoring for attack-family prevalence and bot behavior
+- analyst feedback loops and active learning
+- shadow deployment and champion/challenger policies
+- low-latency feature serving for edge enforcement
 
 ## Evaluation boundary
 
-All IPs, identities, traffic events, labels, fingerprints, and outcomes in this repository are synthetic. The project demonstrates methodology, software architecture, evaluation, and investigation workflows only. It does **not** use Akamai data and does not claim production detection efficacy.
+All IPs, identities, traffic events, labels, fingerprints, and outcomes in this repository are **synthetic**. The project demonstrates methodology, architecture, software implementation, and investigation workflows; it does not claim real-world production efficacy.
 
 ---
 
 <div align="center">
 
-**Good adversarial-response work is not just finding malicious traffic—it is explaining why the current system missed or misclassified it, fixing the failure mode, and proving the fix improves security without creating unacceptable customer friction.**
+### Detection quality is a loop, not a score.
+
+**Find the miss → explain the miss → fix the failure mode → verify the security improvement.**
 
 </div>
