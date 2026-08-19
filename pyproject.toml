@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adversarialweb"
+version = "0.1.0"
+description = "Behavioral bot, scraping, credential-stuffing, and account-takeover detection with adversarial traffic investigation"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "xgboost>=2.0",
+]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.37"]
+
+[project.scripts]
+adversarialweb = "adversarialweb.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["adversarialweb*"]
